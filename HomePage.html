@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gian Carlo S. — Video Editor</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%230a0a0a'/%3E%3Cpath d='M44 28H34v6h4.5c-.8 4-4.2 6.5-8.5 6.5-5.2 0-9.5-4.3-9.5-9.5s4.3-9.5 9.5-9.5c2.4 0 4.6.9 6.3 2.3l4.2-4.2C37.6 17.3 34 16 30 16c-8.8 0-16 7.2-16 16s7.2 16 16 16c8.8 0 15.5-6.5 15.5-16 0-.7-.1-1.4-.2-2H44v-2z' fill='%23ffffff'/%3E%3C/svg%3E">
 <script>
   (function() {
     try {
@@ -46,7 +47,7 @@ html[data-theme="dark"] {
   --nav-bg: rgba(4,5,14,0.75);
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 68px; }
 
 body {
   font-family: var(--font);
@@ -58,7 +59,7 @@ body {
   position: relative;
 }
 
-body, body * {
+body, body *:not(canvas):not(iframe):not(.tool-chip):not(.ticker) {
   transition: background-color 0.35s var(--ease), color 0.35s var(--ease), border-color 0.35s var(--ease), box-shadow 0.35s var(--ease);
 }
 
@@ -70,18 +71,20 @@ body, body * {
   height: 100%;
   pointer-events: none;
   z-index: 0;
+  will-change: transform;
+  contain: strict;
 }
 
 html[data-theme="dark"] #space-canvas { opacity: 1; }
 html:not([data-theme="dark"]) #space-canvas { opacity: 0.38; }
 
-body > *:not(#space-canvas) { position: relative; z-index: 1; }
+body > *:not(#space-canvas):not(nav) { position: relative; z-index: 1; }
 
 /* ─── NAV ─── */
 nav {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 100;
+  z-index: 9999;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -89,7 +92,9 @@ nav {
   height: 68px;
   background: var(--nav-bg);
   backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--gray-200);
+  transform: translateZ(0);
 }
 
 .nav-left {
@@ -550,16 +555,21 @@ html[data-theme="dark"] .hero-stat-row {
 
 /* ─── WORK SECTION ─── */
 .work-section {
-  padding: 5rem 2.5rem;
+  padding: 4rem 2.5rem;
   background: var(--gray-50);
 }
 html[data-theme="dark"] .work-section { background: rgba(18,18,22,0.85); }
+
+.work-inner {
+  max-width: 960px;
+  margin: 0 auto;
+}
 
 .section-header {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
   flex-wrap: wrap;
   gap: 1rem;
 }
@@ -585,11 +595,11 @@ html[data-theme="dark"] .work-section { background: rgba(18,18,22,0.85); }
   display: flex;
   gap: 0;
   border-bottom: 1px solid var(--gray-200);
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 .tab-btn {
-  padding: 0.75rem 1.5rem;
+  padding: 0.65rem 1.25rem;
   font-size: 0.82rem;
   font-weight: 600;
   color: var(--gray-400);
@@ -611,27 +621,28 @@ html[data-theme="dark"] .work-section { background: rgba(18,18,22,0.85); }
 
 .grid-long {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.85rem;
 }
 
 .grid-short {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1.25rem;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.85rem;
 }
 
 .video-card {
   background: var(--white);
-  border: 1px solid var(--gray-200);
-  border-radius: 12px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 10px;
   overflow: hidden;
-  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
+  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.2s;
 }
 
 .video-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 36px rgba(0,0,0,0.08);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+  border-color: var(--gray-400);
 }
 
 .video-card.featured { grid-column: span 2; }
@@ -639,10 +650,11 @@ html[data-theme="dark"] .work-section { background: rgba(18,18,22,0.85); }
 .video-wrapper {
   position: relative;
   width: 100%;
-  padding-bottom: 56.25%;
+  padding-bottom: 88%;
   background: var(--surface-inverse);
   overflow: hidden;
-  border-radius: 12px 12px 0 0;
+  border-radius: 9px 9px 0 0;
+  border-bottom: 1.5px solid var(--gray-200);
 }
 
 .video-wrapper iframe {
@@ -1114,6 +1126,8 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
   .grid-long { grid-template-columns: 1fr; }
   .grid-short { grid-template-columns: repeat(2, 1fr); }
   .video-card.featured { grid-column: span 1; }
+  .video-card { max-width: 100%; }
+  .video-wrapper { padding-bottom: 52%; }
   .cases-grid { grid-template-columns: 1fr 1fr; }
   .about-inner { grid-template-columns: 1fr; gap: 3rem; }
   .diff-grid { grid-template-columns: 1fr; }
@@ -1125,6 +1139,7 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
   .hero { padding: 7rem 1.25rem 3rem; }
   .work-section, .cases-section, .about-section, .diff-section, .contact-section { padding: 3.5rem 1.25rem; }
   .grid-short { grid-template-columns: 1fr; }
+  .video-wrapper { padding-bottom: 56.25%; }
   .cases-grid { grid-template-columns: 1fr; }
   footer { padding: 1.5rem 1.25rem; flex-direction: column; align-items: flex-start; }
 }
@@ -1245,11 +1260,11 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
     <div>
       <div class="about-tag">About Me</div>
       <h2 class="about-heading">Hi, I'm<br>Gian Carlo S.</h2>
-      <p class="about-text">I'm a video editor and motion designer with a passion for cinematic storytelling. I work with brands, independent filmmakers, and content creators to build visuals that move people — literally and emotionally.</p>
+      <p class="about-text">I'm a video editor and an overall multimedia artist with a passion for cinematic storytelling. I work with brands, independent filmmakers, and content creators to build visuals that move people — literally and emotionally.</p>
       <p class="about-text">With a sharp eye for rhythm, pacing, and color, I bring footage to life through intentional editing. Every cut is a decision. Every frame tells a story.</p>
       <div class="skills-wrap">
         <span class="skill-chip">Adobe Premiere Pro</span>
-        <span class="skill-chip">DaVinci Resolve</span>
+        <span class="skill-chip">Graphic Design</span>
         <span class="skill-chip">After Effects</span>
         <span class="skill-chip">Color Grading</span>
         <span class="skill-chip">Motion Graphics</span>
@@ -1298,7 +1313,7 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
   <div class="tab-pane active" id="tab-long">
     <div class="grid-long">
 
-      <div class="video-card featured fade-in">
+      <div class="video-card fade-in">
         <div class="video-wrapper">
           <iframe src="https://drive.google.com/file/d/1AmjHKob3qHyc1wIM90vDvnnsKf7dgmnO/preview" allow="autoplay" allowfullscreen title="Documentary Vol. 1"></iframe>
         </div>
@@ -1309,7 +1324,7 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
         </div>
       </div>
 
-      <div class="video-card featured fade-in">
+      <div class="video-card fade-in">
         <div class="video-wrapper">
           <iframe src="https://drive.google.com/file/d/1RW24FSHihJcEjHHXO-JiLwcS-pYq5xjY/preview" allow="autoplay" allowfullscreen title="Documentary Vol. 2"></iframe>
         </div>
@@ -1367,8 +1382,8 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
           <iframe src="https://drive.google.com/file/d/1fxPlmQMMDYxnTs_cHWplDfDgeXccvnJt/preview" allow="autoplay" allowfullscreen title="Real Estate VSL"></iframe>
         </div>
         <div class="video-info">
-          <span class="video-chip">Real Estate VSL</span>
-          <div class="video-title">Property Video Sales Letter</div>
+          <span class="video-chip">Real Estate</span>
+          <div class="video-title">Property Video Vertical Ad</div>
           <p class="video-desc">High-converting VSL cut for a real estate listing with compelling pacing and property highlights.</p>
         </div>
       </div>
@@ -1381,6 +1396,28 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
           <span class="video-chip">Brand UGC</span>
           <div class="video-title">UGC Brand Content</div>
           <p class="video-desc">Authentic user-generated content edit polished for brand use across social media platforms.</p>
+        </div>
+      </div>
+
+      <div class="video-card fade-in">
+        <div class="video-wrapper">
+          <iframe src="https://drive.google.com/file/d/1gjAiPjwIbZHuiKwpQhit1mZGWArdmwWy/preview" allow="autoplay" allowfullscreen title="Company VSL"></iframe>
+        </div>
+        <div class="video-info">
+          <span class="video-chip">VSL</span>
+          <div class="video-title">Company Video Sales Letter</div>
+          <p class="video-desc">Engaging company video sales letter designed to showcase products or services with a compelling narrative.
+        </div>
+      </div>
+
+      <div class="video-card fade-in">
+        <div class="video-wrapper">
+          <iframe src="https://drive.google.com/file/d/1MObOuFO90sxyTdCUHNegMuLpUr7L8WL0/preview" allow="autoplay" allowfullscreen title="Meta Ad"></iframe>
+        </div>
+        <div class="video-info">
+          <span class="video-chip">Meta Ad</span>
+          <div class="video-title">Meta Advertisement</div>
+          <p class="video-desc">Engaging meta ad edit designed for social media promotion with compelling text animations and transitions.
         </div>
       </div>
 
@@ -1725,8 +1762,10 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
     resize();
     window.addEventListener('resize', resize);
 
-    // Generate stars
-    for (let i = 0; i < 260; i++) {
+    // Generate stars — fewer on mobile to reduce GPU load
+    const isMobile = window.innerWidth < 768;
+    const starCount = isMobile ? 100 : 260;
+    for (let i = 0; i < starCount; i++) {
       stars.push({
         x: Math.random(),
         y: Math.random(),
@@ -1751,7 +1790,11 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
     }
 
     let t = 0;
+    let animId = null;
+    let isRunning = true;
+
     function draw() {
+      if (!isRunning) return;
       t += 0.012;
       ctx.clearRect(0, 0, W, H);
 
@@ -1814,7 +1857,18 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
 
       requestAnimationFrame(draw);
     }
-    draw();
+    animId = requestAnimationFrame(draw);
+
+    // Pause animation when tab/app is hidden to save memory on mobile
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        isRunning = false;
+        if (animId) { cancelAnimationFrame(animId); animId = null; }
+      } else {
+        isRunning = true;
+        animId = requestAnimationFrame(draw);
+      }
+    });
   })();
 
   // ─── TOOLS SHOWCASE ANIMATION ───
