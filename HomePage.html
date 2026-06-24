@@ -561,7 +561,7 @@ html[data-theme="dark"] .hero-stat-row {
 html[data-theme="dark"] .work-section { background: rgba(18,18,22,0.85); }
 
 .work-inner {
-  max-width: 960px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -595,7 +595,7 @@ html[data-theme="dark"] .work-section { background: rgba(18,18,22,0.85); }
   display: flex;
   gap: 0;
   border-bottom: 1px solid var(--gray-200);
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
 }
 
 .tab-btn {
@@ -619,54 +619,244 @@ html[data-theme="dark"] .work-section { background: rgba(18,18,22,0.85); }
 .tab-pane { display: none; }
 .tab-pane.active { display: block; }
 
-.grid-long {
+/* ─── PLAYER + PLAYLIST LAYOUT ─── */
+.player-layout {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.85rem;
+  grid-template-columns: 1fr 300px;
+  gap: 1.25rem;
+  align-items: start;
 }
 
-.grid-short {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 0.85rem;
-}
-
-.video-card {
+/* LEFT: big player */
+.player-main {
   background: var(--white);
   border: 1.5px solid var(--gray-200);
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
-  transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.2s;
 }
 
-.video-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.10);
-  border-color: var(--gray-400);
-}
-
-.video-card.featured { grid-column: span 2; }
-
-.video-wrapper {
+.player-frame-wrap {
   position: relative;
   width: 100%;
-  padding-bottom: 88%;
-  background: var(--surface-inverse);
-  overflow: hidden;
-  border-radius: 9px 9px 0 0;
-  border-bottom: 1.5px solid var(--gray-200);
+  padding-bottom: 56.25%;
+  background: #000;
 }
 
-.video-wrapper iframe {
+.player-frame-wrap iframe {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   border: none;
+  display: block;
 }
 
-.video-info { padding: 1.25rem 1.4rem 1.5rem; }
+/* special: podcast card uses an <a> + <img> instead of iframe */
+.player-frame-wrap .podcast-thumb {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
+.player-frame-wrap .podcast-play-btn {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.30);
+  transition: background 0.2s;
+  text-decoration: none;
+}
+
+.player-frame-wrap .podcast-play-btn:hover { background: rgba(0,0,0,0.15); }
+
+.player-frame-wrap .podcast-play-btn .play-circle {
+  width: 64px; height: 64px;
+  background: rgba(255,255,255,0.95);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  transition: transform 0.2s;
+}
+
+.player-frame-wrap .podcast-play-btn:hover .play-circle { transform: scale(1.08); }
+
+.player-info {
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.player-info .video-chip {
+  display: inline-block;
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--gray-600);
+  background: var(--gray-100);
+  padding: 0.22rem 0.65rem;
+  border-radius: 100px;
+  margin-bottom: 0.6rem;
+}
+
+.player-info .player-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--black);
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  margin-bottom: 0.4rem;
+}
+
+.player-info .player-desc {
+  font-size: 0.82rem;
+  color: var(--gray-600);
+  line-height: 1.65;
+}
+
+/* RIGHT: playlist column */
+.playlist-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: 12px;
+  overflow: hidden;
+  max-height: 520px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gray-200) transparent;
+}
+
+.playlist-col::-webkit-scrollbar { width: 4px; }
+.playlist-col::-webkit-scrollbar-track { background: transparent; }
+.playlist-col::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: 4px; }
+
+.playlist-header {
+  padding: 0.85rem 1rem 0.75rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--gray-400);
+  border-bottom: 1.5px solid var(--gray-200);
+  position: sticky;
+  top: 0;
+  background: var(--white);
+  z-index: 2;
+}
+
+html[data-theme="dark"] .playlist-header {
+  background: var(--white);
+  border-color: var(--gray-200);
+}
+
+.playlist-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--gray-200);
+  cursor: pointer;
+  transition: background 0.15s;
+  text-align: left;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  font-family: var(--font);
+  width: 100%;
+  color: var(--black);
+}
+
+.playlist-item:last-child { border-bottom: none; }
+
+.playlist-item:hover { background: var(--gray-50); }
+
+.playlist-item.active {
+  background: var(--gray-100);
+  border-left: 3px solid var(--black);
+  padding-left: calc(1rem - 3px);
+}
+
+html[data-theme="dark"] .playlist-item.active {
+  background: rgba(255,255,255,0.07);
+  border-left-color: var(--black);
+}
+
+.playlist-num {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--gray-400);
+  min-width: 18px;
+  text-align: right;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.playlist-item.active .playlist-num {
+  color: var(--black);
+}
+
+/* animated "now playing" bars */
+.playlist-now-playing {
+  display: none;
+  align-items: flex-end;
+  gap: 2px;
+  min-width: 18px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.playlist-item.active .playlist-num { display: none; }
+.playlist-item.active .playlist-now-playing { display: flex; }
+
+.playlist-now-playing span {
+  display: block;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--black);
+  animation: npBar 0.9s ease-in-out infinite alternate;
+}
+
+.playlist-now-playing span:nth-child(1) { height: 6px;  animation-delay: 0s; }
+.playlist-now-playing span:nth-child(2) { height: 12px; animation-delay: 0.2s; }
+.playlist-now-playing span:nth-child(3) { height: 8px;  animation-delay: 0.1s; }
+.playlist-now-playing span:nth-child(4) { height: 14px; animation-delay: 0.3s; }
+
+@keyframes npBar {
+  from { transform: scaleY(0.3); }
+  to   { transform: scaleY(1); }
+}
+
+.playlist-text { min-width: 0; flex: 1; }
+
+.playlist-label {
+  font-size: 0.67rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gray-400);
+  margin-bottom: 0.2rem;
+  display: block;
+}
+
+.playlist-item.active .playlist-label { color: var(--black); }
+
+.playlist-name {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--black);
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* keep video-chip available for player-info */
 .video-chip {
   display: inline-block;
   font-size: 0.67rem;
@@ -1050,14 +1240,14 @@ html[data-theme="dark"] .testimonials-section { background: rgba(18,18,22,0.85);
 }
 
 .testi-card--featured {
-  background: var(--surface-inverse);
-  border-color: var(--surface-inverse);
+  background-color: rgba(255, 251, 0, 0.31);
+  border-color: var(--gray-200);
 }
 
 .testi-card--featured .testi-stars { color: #f59e0b; }
-.testi-card--featured .testi-quote { color: rgba(255,255,255,0.7); }
-.testi-card--featured .testi-name { color: var(--ink-inverse); }
-.testi-card--featured .testi-role { color: rgba(255,255,255,0.4); }
+.testi-card--featured .testi-quote { color: rgba(0, 0, 0, 0.7); }
+.testi-card--featured .testi-name { color: rgba(0, 0, 0, 0, 0); }
+.testi-card--featured .testi-role { color: rgba(0, 0, 0, 0.4); }
 html[data-theme="dark"] .contact-section { background: rgba(14,14,15,0.82); }
 html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
 
@@ -1123,11 +1313,12 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
 
 /* ─── RESPONSIVE ─── */
 @media (max-width: 960px) {
-  .grid-long { grid-template-columns: 1fr; }
-  .grid-short { grid-template-columns: repeat(2, 1fr); }
-  .video-card.featured { grid-column: span 1; }
-  .video-card { max-width: 100%; }
-  .video-wrapper { padding-bottom: 52%; }
+  .player-layout { grid-template-columns: 1fr; }
+  .playlist-col { max-height: 320px; flex-direction: row; flex-wrap: wrap; overflow-x: auto; overflow-y: hidden; border-radius: 12px; }
+  .playlist-header { display: none; }
+  .playlist-item { flex: 0 0 auto; width: 180px; border-bottom: none; border-right: 1px solid var(--gray-200); flex-direction: column; align-items: flex-start; gap: 0.35rem; }
+  .playlist-item:last-child { border-right: none; }
+  .playlist-item.active { border-left: none; border-bottom: 3px solid var(--black); padding-left: 1rem; padding-bottom: calc(0.85rem - 3px); }
   .cases-grid { grid-template-columns: 1fr 1fr; }
   .about-inner { grid-template-columns: 1fr; gap: 3rem; }
   .diff-grid { grid-template-columns: 1fr; }
@@ -1138,8 +1329,6 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
   .nav-links li:not(:last-child) { display: none; }
   .hero { padding: 7rem 1.25rem 3rem; }
   .work-section, .cases-section, .about-section, .diff-section, .contact-section { padding: 3.5rem 1.25rem; }
-  .grid-short { grid-template-columns: 1fr; }
-  .video-wrapper { padding-bottom: 56.25%; }
   .cases-grid { grid-template-columns: 1fr; }
   footer { padding: 1.5rem 1.25rem; flex-direction: column; align-items: flex-start; }
 }
@@ -1260,11 +1449,11 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
     <div>
       <div class="about-tag">About Me</div>
       <h2 class="about-heading">Hi, I'm<br>Gian Carlo S.</h2>
-      <p class="about-text">I'm a video editor and an overall multimedia artist with a passion for cinematic storytelling. I work with brands, independent filmmakers, and content creators to build visuals that move people — literally and emotionally.</p>
+      <p class="about-text">I'm a video editor and motion designer with a passion for cinematic storytelling. I work with brands, independent filmmakers, and content creators to build visuals that move people — literally and emotionally.</p>
       <p class="about-text">With a sharp eye for rhythm, pacing, and color, I bring footage to life through intentional editing. Every cut is a decision. Every frame tells a story.</p>
       <div class="skills-wrap">
         <span class="skill-chip">Adobe Premiere Pro</span>
-        <span class="skill-chip">Graphic Design</span>
+        <span class="skill-chip">DaVinci Resolve</span>
         <span class="skill-chip">After Effects</span>
         <span class="skill-chip">Color Grading</span>
         <span class="skill-chip">Motion Graphics</span>
@@ -1298,174 +1487,109 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
 
 <!-- WORK -->
 <section class="work-section" id="work">
-  <div class="section-header">
-    <div>
-      <div class="section-tag fade-in">Selected Work</div>
-      <h2 class="section-title fade-in">My Projects</h2>
+  <div class="work-inner">
+    <div class="section-header">
+      <div>
+        <div class="section-tag fade-in">Selected Work</div>
+        <h2 class="section-title fade-in">My Projects</h2>
+      </div>
     </div>
-  </div>
 
-  <div class="tab-bar">
-    <button class="tab-btn active" data-tab="long">Long-Form</button>
-    <button class="tab-btn" data-tab="short">Short-Form</button>
-  </div>
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="long">Long-Form</button>
+      <button class="tab-btn" data-tab="short">Short-Form</button>
+    </div>
 
-  <div class="tab-pane active" id="tab-long">
-    <div class="grid-long">
-
-      <div class="video-card fade-in">
-        <div class="video-wrapper">
-          <iframe src="https://drive.google.com/file/d/1AmjHKob3qHyc1wIM90vDvnnsKf7dgmnO/preview" allow="autoplay" allowfullscreen title="Documentary Vol. 1"></iframe>
-        </div>
-        <div class="video-info">
-          <span class="video-chip">Documentary</span>
-          <div class="video-title">Documentary Feature — Vol. 1</div>
-          <p class="video-desc">A long-form documentary edit showcasing narrative storytelling through carefully paced cuts and cinematic visuals.</p>
-        </div>
-      </div>
-
-      <div class="video-card fade-in">
-        <div class="video-wrapper">
-          <iframe src="https://drive.google.com/file/d/1RW24FSHihJcEjHHXO-JiLwcS-pYq5xjY/preview" allow="autoplay" allowfullscreen title="Documentary Vol. 2"></iframe>
-        </div>
-        <div class="video-info">
-          <span class="video-chip">Documentary</span>
-          <div class="video-title">Documentary Feature — Vol. 2</div>
-          <p class="video-desc">A second documentary piece exploring in-depth subjects with interview-driven structure and atmospheric b-roll editing.</p>
-        </div>
-      </div>
-
-      <a class="video-card fade-in" href="https://www.youtube.com/@marketingonmars/videos" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block;">
-        <div class="video-wrapper" style="padding-bottom:56.25%;position:relative;overflow:hidden;background:#000;">
-          <img
-            src="https://yt3.googleusercontent.com/1fCmWhXhr4l6zFwIHjDMEzwx4DNusHTiZad80sNgcNUzqDilAVwgYKpgZZEyKr1m1tX3gayFBg=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj"
-            alt="Marketing on Mars Podcast"
-            style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 0.4s cubic-bezier(0.25,0,0,1);"
-            onmouseover="this.style.transform='scale(1.03)'"
-            onmouseout="this.style.transform='scale(1)'"
-          />
-          <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.28);transition:background 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.15)'" onmouseout="this.style.background='rgba(0,0,0,0.28)'">
-            <div style="width:54px;height:54px;background:rgba(255,255,255,0.95);border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(0,0,0,0.3);">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7 5l10 5-10 5V5z" fill="#0a0a0a"/></svg>
-            </div>
+    <!-- LONG-FORM TAB -->
+    <div class="tab-pane active" id="tab-long">
+      <div class="player-layout">
+        <div class="player-main">
+          <div class="player-frame-wrap" id="lf-frame-wrap">
+            <iframe id="lf-iframe" src="https://drive.google.com/file/d/1VcmyDznMt3e1gXtL0KF5F3XQBDMBZ0O8/preview" allow="autoplay" allowfullscreen title="Now Playing"></iframe>
+          </div>
+          <div class="player-info">
+            <span class="video-chip" id="lf-chip">Educational</span>
+            <div class="player-title" id="lf-title">Educational Long-Form Video</div>
+            <p class="player-desc" id="lf-desc">An educational long-form video exploring the intricacies of video editing and storytelling techniques. Produced for the channel Schooling America.</p>
           </div>
         </div>
-        <div class="video-info" style="display:flex;align-items:center;justify-content:space-between;gap:0.75rem;">
-          <div>
-            <span class="video-chip">Podcast</span>
-            <div class="video-title">Podcast Production</div>
-            <p class="video-desc">Full podcast video edits with multi-camera cuts, lower thirds, audio cleanup, and branded intros and outros.</p>
+        <div class="playlist-col">
+          <div class="playlist-header">Up Next</div>
+          <button class="playlist-item active" data-src="https://drive.google.com/file/d/1VcmyDznMt3e1gXtL0KF5F3XQBDMBZ0O8/preview" data-chip="Educational" data-title="Educational Long-Form Video" data-desc="An educational long-form video exploring the intricacies of video editing and storytelling techniques. Produced for the channel Schooling America." data-type="iframe" data-player="lf">
+            <span class="playlist-num">1</span><span class="playlist-now-playing"><span></span><span></span><span></span><span></span></span>
+            <span class="playlist-text"><span class="playlist-label">Educational</span><span class="playlist-name">Educational Long-Form</span></span>
+          </button>
+          <button class="playlist-item" data-src="https://drive.google.com/file/d/1AmjHKob3qHyc1wIM90vDvnnsKf7dgmnO/preview" data-chip="Documentary" data-title="Documentary Feature — Vol. 1" data-desc="A long-form documentary edit showcasing narrative storytelling through carefully paced cuts and cinematic visuals." data-type="iframe" data-player="lf">
+            <span class="playlist-num">2</span><span class="playlist-now-playing"><span></span><span></span><span></span><span></span></span>
+            <span class="playlist-text"><span class="playlist-label">Documentary</span><span class="playlist-name">Documentary Vol. 1</span></span>
+          </button>
+          <button class="playlist-item" data-src="https://drive.google.com/file/d/1RW24FSHihJcEjHHXO-JiLwcS-pYq5xjY/preview" data-chip="Documentary" data-title="Documentary Feature — Vol. 2" data-desc="A second documentary piece exploring in-depth subjects with interview-driven structure and atmospheric b-roll editing." data-type="iframe" data-player="lf">
+            <span class="playlist-num">3</span><span class="playlist-now-playing"><span></span><span></span><span></span><span></span></span>
+            <span class="playlist-text"><span class="playlist-label">Documentary</span><span class="playlist-name">Documentary Vol. 2</span></span>
+          </button>
+          <button class="playlist-item" data-src="https://drive.google.com/file/d/15j68zjqkuHw7amOff87imRv8Pcb9m4Cf/preview" data-chip="Documentary" data-title="Documentary Feature — Vol. 3" data-desc="A third documentary piece delving into complex narratives with archival footage and contemporary interviews." data-type="iframe" data-player="lf">
+            <span class="playlist-num">4</span><span class="playlist-now-playing"><span></span><span></span><span></span><span></span></span>
+            <span class="playlist-text"><span class="playlist-label">Documentary</span><span class="playlist-name">Documentary Vol. 3</span></span>
+          </button>
+          <button class="playlist-item" data-src="https://www.youtube.com/@marketingonmars/videos" data-chip="Podcast" data-title="Podcast Production" data-desc="Full podcast video edits with multi-camera cuts, lower thirds, audio cleanup, and branded intros and outros." data-type="podcast" data-thumb="https://yt3.googleusercontent.com/1fCmWhXhr4l6zFwIHjDMEzwx4DNusHTiZad80sNgcNUzqDilAVwgYKpgZZEyKr1m1tX3gayFBg=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj" data-player="lf">
+            <span class="playlist-num">5</span><span class="playlist-now-playing"><span></span><span></span><span></span><span></span></span>
+            <span class="playlist-text"><span class="playlist-label">Podcast</span><span class="playlist-name">Podcast Production</span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHORT-FORM TAB -->
+    <div class="tab-pane" id="tab-short">
+      <div class="player-layout">
+        <div class="player-main">
+          <div class="player-frame-wrap" id="sf-frame-wrap">
+            <iframe id="sf-iframe" src="https://drive.google.com/file/d/1fxPlmQMMDYxnTs_cHWplDfDgeXccvnJt/preview" allow="autoplay" allowfullscreen title="Now Playing"></iframe>
           </div>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0;opacity:0.35;"><path d="M3 13L13 3M13 3H6M13 3v7" stroke="#0a0a0a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <div class="player-info">
+            <span class="video-chip" id="sf-chip">Real Estate</span>
+            <div class="player-title" id="sf-title">Property Video Vertical Ad</div>
+            <p class="player-desc" id="sf-desc">High-converting VSL cut for a real estate listing with compelling pacing and property highlights.</p>
+          </div>
         </div>
-      </a>
-
-      <div class="video-card fade-in">
-        <div class="video-wrapper">
-          <iframe src="https://drive.google.com/file/d/1FXdyafR1Gfe9jEP1krC8om3yLRsWhnZ0/preview" allow="autoplay" allowfullscreen title="Montage"></iframe>
-        </div>
-        <div class="video-info">
-          <span class="video-chip">Montage</span>
-          <div class="video-title">Cinematic Montage</div>
-          <p class="video-desc">A rhythm-driven montage demonstrating beat-synced editing, color grading consistency, and emotional flow.</p>
+        <div class="playlist-col">
+          <div class="playlist-header">Up Next</div>
+          <button class="playlist-item active" data-src="https://drive.google.com/file/d/1fxPlmQMMDYxnTs_cHWplDfDgeXccvnJt/preview" data-chip="Real Estate" data-title="Property Video Vertical Ad" data-desc="High-converting VSL cut for a real estate listing with compelling pacing and property highlights." data-type="iframe" data-player="sf">
+            <span class="playlist-num">1</span><span class="playlist-now-playing"><span></span><span></span><span></span><span></span></span>
+            <span class="playlist-text"><span class="playlist-label">Real Estate</span><span class="playlist-name">Property Video Ad</span></span>
+          </button>
+          <button class="playlist-item" data-src="https://drive.google.com/file/d/1We_PUYVrEEqkdIaHqLADzJjOI1w-RD2r/preview" data-chip="Brand UGC" data-title="UGC Brand Content" data-desc="Authentic user-generated content edit polished for brand use across social media platforms." data-type="iframe" data-player="sf">
+            <span class="playlist-num">2</span><span class="playlist-now-playing"><span></span><span></span><span></span><span></span></span>
+            <span class="playlist-text"><span class="playlist-label">Brand UGC</span><span class="playlist-name">UGC Brand Content</span></span>
+          </button>
+          <button class="playlist-item" data-src="https://drive.google.com/file/d/1gjAiPjwIbZHuiKwpQhit1mZGWArdmwWy/preview" data-chip="VSL" data-title="Company Video Sales Letter" data-desc="Engaging company VSL designed to showcase products or services with a compelling narrative." data-type="iframe" data-player="sf">
+            <span class="playlist-num">3</span><span class="playlist-now-playing"><span></span><span></span><span></span><span></span></span>
+            <span class="playlist-text"><span class="playlist-label">VSL</span><span class="playlist-name">Company Video Sales Letter</span></span>
+          </button>
+          <button class="playlist-item" data-src="https://drive.google.com/file/d/1MObOuFO90sxyTdCUHNegMuLpUr7L8WL0/preview" data-chip="Meta Ad" data-title="Meta Advertisement" data-desc="Engaging meta ad edit designed for social media promotion with compelling text animations and transitions." data-type="iframe" data-player="sf">
+            <span class="playlist-num">4</span><span class="playlist-now-playing"><span></span><span></span><span></span><span></span></span>
+            <span class="playlist-text"><span class="playlist-label">Meta Ad</span><span class="playlist-name">Meta Advertisement</span></span>
+          </button>
+          <button class="playlist-item" data-src="https://drive.google.com/file/d/1O9Lbm7kv_WSvmkqMAIlfJoxF-1xQFshL/preview" data-chip="Promotional Ad" data-title="Promotional Advertisement" data-desc="Short-form promo ad designed for paid media with attention-grabbing hooks and a strong call to action." data-type="iframe" data-player="sf">
+            <span class="playlist-num">5</span><span class="playlist-now-playing"><span></span><span></span><span></span><span></span></span>
+            <span class="playlist-text"><span class="playlist-label">Promo Ad</span><span class="playlist-name">Promotional Advertisement</span></span>
+          </button>
+          <button class="playlist-item" data-src="https://drive.google.com/file/d/1NHwHchGrTmZBAa3mDd-acTqqc0kvQA14/preview" data-chip="Product Ad" data-title="Product Advertisement" data-desc="Clean product-focused ad edit with tight cuts, product reveals, and on-brand motion graphics." data-type="iframe" data-player="sf">
+            <span class="playlist-num">6</span><span class="playlist-now-playing"><span></span><span></span><span></span><span></span></span>
+            <span class="playlist-text"><span class="playlist-label">Product Ad</span><span class="playlist-name">Product Advertisement</span></span>
+          </button>
+          <button class="playlist-item" data-src="https://drive.google.com/file/d/196CNiIL2AzShGxem14JHVwfVLVyp1IHN/preview" data-chip="YouTube Short" data-title="YouTube Short" data-desc="Vertical short-form content optimised for YouTube Shorts with fast pacing and hook-first structure." data-type="iframe" data-player="sf">
+            <span class="playlist-num">7</span><span class="playlist-now-playing"><span></span><span></span><span></span><span></span></span>
+            <span class="playlist-text"><span class="playlist-label">YouTube Short</span><span class="playlist-name">YouTube Short</span></span>
+          </button>
+          <button class="playlist-item" data-src="https://drive.google.com/file/d/1fRs-H3E6H8v9HpKZ97tBcPdtVL8PnmwF/preview" data-chip="Motion Graphics" data-title="Motion Graphics Piece" data-desc="Custom motion graphics work showcasing animation, typography in motion, and visual design skills." data-type="iframe" data-player="sf">
+            <span class="playlist-num">8</span><span class="playlist-now-playing"><span></span><span></span><span></span><span></span></span>
+            <span class="playlist-text"><span class="playlist-label">Motion Graphics</span><span class="playlist-name">Motion Graphics Piece</span></span>
+          </button>
         </div>
       </div>
-
     </div>
-  </div>
 
-  <div class="tab-pane" id="tab-short">
-    <div class="grid-short">
-
-      <div class="video-card fade-in">
-        <div class="video-wrapper">
-          <iframe src="https://drive.google.com/file/d/1fxPlmQMMDYxnTs_cHWplDfDgeXccvnJt/preview" allow="autoplay" allowfullscreen title="Real Estate VSL"></iframe>
-        </div>
-        <div class="video-info">
-          <span class="video-chip">Real Estate</span>
-          <div class="video-title">Property Video Vertical Ad</div>
-          <p class="video-desc">High-converting VSL cut for a real estate listing with compelling pacing and property highlights.</p>
-        </div>
-      </div>
-
-      <div class="video-card fade-in">
-        <div class="video-wrapper">
-          <iframe src="https://drive.google.com/file/d/1We_PUYVrEEqkdIaHqLADzJjOI1w-RD2r/preview" allow="autoplay" allowfullscreen title="Brand UGC"></iframe>
-        </div>
-        <div class="video-info">
-          <span class="video-chip">Brand UGC</span>
-          <div class="video-title">UGC Brand Content</div>
-          <p class="video-desc">Authentic user-generated content edit polished for brand use across social media platforms.</p>
-        </div>
-      </div>
-
-      <div class="video-card fade-in">
-        <div class="video-wrapper">
-          <iframe src="https://drive.google.com/file/d/1gjAiPjwIbZHuiKwpQhit1mZGWArdmwWy/preview" allow="autoplay" allowfullscreen title="Company VSL"></iframe>
-        </div>
-        <div class="video-info">
-          <span class="video-chip">VSL</span>
-          <div class="video-title">Company Video Sales Letter</div>
-          <p class="video-desc">Engaging company video sales letter designed to showcase products or services with a compelling narrative.
-        </div>
-      </div>
-
-      <div class="video-card fade-in">
-        <div class="video-wrapper">
-          <iframe src="https://drive.google.com/file/d/1FijUcU7WBzbjWjfZWBWtooJkFZ2T_QHA/preview" allow="autoplay" allowfullscreen title="Meta Ad"></iframe>
-        </div>
-        <div class="video-info">
-          <span class="video-chip">Meta Ad</span>
-          <div class="video-title">Meta Advertisement</div>
-          <p class="video-desc">Engaging meta ad edit designed for social media promotion with compelling text animations and transitions.
-        </div>
-      </div>
-
-      <div class="video-card fade-in">
-        <div class="video-wrapper">
-          <iframe src="https://drive.google.com/file/d/1O9Lbm7kv_WSvmkqMAIlfJoxF-1xQFshL/preview" allow="autoplay" allowfullscreen title="Promotional Ad"></iframe>
-        </div>
-        <div class="video-info">
-          <span class="video-chip">Promotional Ad</span>
-          <div class="video-title">Promotional Advertisement</div>
-          <p class="video-desc">Short-form promo ad designed for paid media with attention-grabbing hooks and a strong call to action.</p>
-        </div>
-      </div>
-
-      <div class="video-card fade-in">
-        <div class="video-wrapper">
-          <iframe src="https://drive.google.com/file/d/1NHwHchGrTmZBAa3mDd-acTqqc0kvQA14/preview" allow="autoplay" allowfullscreen title="Product Ad"></iframe>
-        </div>
-        <div class="video-info">
-          <span class="video-chip">Product Ad</span>
-          <div class="video-title">Product Advertisement</div>
-          <p class="video-desc">Clean product-focused ad edit with tight cuts, product reveals, and on-brand motion graphics.</p>
-        </div>
-      </div>
-
-      <div class="video-card fade-in">
-        <div class="video-wrapper">
-          <iframe src="https://drive.google.com/file/d/196CNiIL2AzShGxem14JHVwfVLVyp1IHN/preview" allow="autoplay" allowfullscreen title="YouTube Short"></iframe>
-        </div>
-        <div class="video-info">
-          <span class="video-chip">YouTube Short</span>
-          <div class="video-title">YouTube Short</div>
-          <p class="video-desc">Vertical short-form content optimised for YouTube Shorts with fast pacing and hook-first structure.</p>
-        </div>
-      </div>
-
-      <div class="video-card fade-in">
-        <div class="video-wrapper">
-          <iframe src="https://drive.google.com/file/d/1fRs-H3E6H8v9HpKZ97tBcPdtVL8PnmwF/preview" allow="autoplay" allowfullscreen title="Motion Graphics"></iframe>
-        </div>
-        <div class="video-info">
-          <span class="video-chip">Motion Graphics</span>
-          <div class="video-title">Motion Graphics Piece</div>
-          <p class="video-desc">Custom motion graphics work showcasing animation, typography in motion, and visual design skills.</p>
-        </div>
-      </div>
-
-    </div>
   </div>
 </section>
 
@@ -1572,35 +1696,8 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
       <div class="testi-stars">★★★★★</div>
       <p class="testi-quote">"If you need a freelancer that is talented and even more importantly, skilled — Gian is a safe choice. Gian is also extremely easy to communicate with, which is something I really appreciate."</p>
       <div class="testi-meta">
-        <div class="testi-name">Upwork Client</div>
-        <div class="testi-role">YouTube Video Creator · Jul 2024</div>
-      </div>
-    </div>
-
-    <div class="testi-card fade-in">
-      <div class="testi-stars">★★★★★</div>
-      <p class="testi-quote">"Gian is very responsible, talented, and smart. The workflow is smooth and he delivers things fast. He likes to be challenged and prove that he can overcome and grow from any situation. I know that he does his best and cares about the quality of his work."</p>
-      <div class="testi-meta">
-        <div class="testi-name">Upwork Client</div>
-        <div class="testi-role">Marketing Podcast Editor · Jun–Sep 2024</div>
-      </div>
-    </div>
-
-    <div class="testi-card fade-in">
-      <div class="testi-stars">★★★★★</div>
-      <p class="testi-quote">"Gian is great! Speedy work — positive guy — available almost all the time. Would definitely recommend 😃"</p>
-      <div class="testi-meta">
-        <div class="testi-name">Upwork Client</div>
-        <div class="testi-role">YouTube Scriptwriter · Jan 2023</div>
-      </div>
-    </div>
-
-    <div class="testi-card fade-in">
-      <div class="testi-stars">★★★★★</div>
-      <p class="testi-quote">"Gian is an amazing guy to have on the team! He helped me write tons of scripts for my shorts videos on YouTube and we accumulated thousands of views. He's also very well spoken and extremely communicative throughout the whole process."</p>
-      <div class="testi-meta">
-        <div class="testi-name">Upwork Client</div>
-        <div class="testi-role">YouTube Video Production · 2023</div>
+        <div class="testi-name">Joachim M.</div>
+        <div class="testi-role">YouTube Video Creator</div>
       </div>
     </div>
 
@@ -1609,7 +1706,47 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
       <p class="testi-quote">"Gian Carlo delivered good work on his video editing for my project and I enjoyed working with him. He met all deadlines. At one point I asked for additional changes — he was very cooperative in his expertise and I will likely have additional jobs for him in the future."</p>
       <div class="testi-meta">
         <div class="testi-name">Upwork Client</div>
-        <div class="testi-role">YouTube Channel Editor · Mar 2023</div>
+        <div class="testi-role">YouTube Channel Editor</div>
+      </div>
+    </div>
+
+    <div class="testi-card fade-in">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Gian is very responsible, talented, and smart. The workflow is smooth and he delivers things fast. He likes to be challenged and prove that he can overcome and grow from any situation. I know that he does his best and cares about the quality of his work."</p>
+      <div class="testi-meta">
+        <div class="testi-name">Simon C.</div>
+        <div class="testi-role">GSV Studios</div>
+      </div>
+    </div>
+
+    <div class="testi-card fade-in">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"As a YouTube creator, finding an editor who actually gets your vision is rare — Gian gets it. I brought him on for a long-form video and he nailed the pacing in a way that kept the energy moving without ever feeling rushed. Every cut felt deliberate and purposeful.
+
+On top of that, the cinematic quality Gian added took the video to a completely different level. It looked like something you'd expect from a channel ten times my size. He didn't just edit the footage, he told the story with it.
+
+Highly recommend Gian to any creator who wants their content to stand out. Already planning my next project with him."</p>
+      <div class="testi-meta">
+        <div class="testi-name">Lauren F.</div>
+        <div class="testi-role">Schooling America</div>
+      </div>
+    </div>
+
+    <div class="testi-card fade-in">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Gian is great! Speedy work — positive guy — available almost all the time. Would definitely recommend 😃"</p>
+      <div class="testi-meta">
+        <div class="testi-name">Upwork Client</div>
+        <div class="testi-role">YouTube Scriptwriter</div>
+      </div>
+    </div>
+
+    <div class="testi-card fade-in">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Gian is an amazing guy to have on the team! He helped me write tons of scripts for my shorts videos on YouTube and we accumulated thousands of views. He's also very well spoken and extremely communicative throughout the whole process."</p>
+      <div class="testi-meta">
+        <div class="testi-name">Upwork Client</div>
+        <div class="testi-role">YouTube Video Production</div>
       </div>
     </div>
 
@@ -1618,7 +1755,16 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
       <p class="testi-quote">"I am pleased to endorse Gian Carlo S. He has been working with me as a Voice Over talent for my YouTube channel for a few months now. He is very knowledgeable and confident in his abilities, consistent, reliable, and attentive to details. Gian is open to feedback and he always offers his very best in every project. If you are looking for someone you can count on for your next project, Gian is the guy for the job. I highly recommend him."</p>
       <div class="testi-meta">
         <div class="testi-name">Agnes A.</div>
-        <div class="testi-role">YouTube Channel Owner · Business Niche</div>
+        <div class="testi-role">YouTube Channel Owner</div>
+      </div>
+    </div>
+
+    <div class="testi-card fade-in">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-quote">"Gian Carlo blew me away with the quality of his video editing and voiceover work. We are excited to continue to use his services. I only hesitate to recommend him because everyone else will find out!"</p>
+      <div class="testi-meta">
+        <div class="testi-name">Vishy V.</div>
+        <div class="testi-role">YouTube Travel Vlogs</div>
       </div>
     </div>
 
@@ -1688,7 +1834,6 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
 <!-- FOOTER -->
 <footer>
   <p>© 2026 Gian Carlo S. All rights reserved.</p>
-  <p>Email: giancarlo.sitchon@gmail.com</p>
 </footer>
 
 <script>
@@ -1732,6 +1877,61 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
       document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
       document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // ─── PLAYLIST LOGIC ───
+  function buildPlayerContent(frameWrap, iframeId, type, src, thumb) {
+    // Clear existing content
+    frameWrap.innerHTML = '';
+    if (type === 'podcast') {
+      // Show a thumbnail + external link overlay instead of iframe
+      const img = document.createElement('img');
+      img.src = thumb;
+      img.alt = 'Podcast thumbnail';
+      img.className = 'podcast-thumb';
+      const link = document.createElement('a');
+      link.href = src;
+      link.target = '_blank';
+      link.rel = 'noopener';
+      link.className = 'podcast-play-btn';
+      link.innerHTML = '<div class="play-circle"><svg width="22" height="22" viewBox="0 0 20 20" fill="none"><path d="M7 5l10 5-10 5V5z" fill="#0a0a0a"/></svg></div>';
+      frameWrap.appendChild(img);
+      frameWrap.appendChild(link);
+    } else {
+      const iframe = document.createElement('iframe');
+      iframe.id = iframeId;
+      iframe.src = src;
+      iframe.allow = 'autoplay';
+      iframe.allowFullscreen = true;
+      iframe.title = 'Now Playing';
+      frameWrap.appendChild(iframe);
+    }
+  }
+
+  document.querySelectorAll('.playlist-item').forEach(item => {
+    item.addEventListener('click', () => {
+      const player = item.dataset.player; // 'lf' or 'sf'
+      const src    = item.dataset.src;
+      const chip   = item.dataset.chip;
+      const title  = item.dataset.title;
+      const desc   = item.dataset.desc;
+      const type   = item.dataset.type;
+      const thumb  = item.dataset.thumb || '';
+
+      // Update active state within the same playlist column
+      const col = item.closest('.playlist-col');
+      col.querySelectorAll('.playlist-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+
+      // Update player
+      const frameWrap = document.getElementById(player + '-frame-wrap');
+      buildPlayerContent(frameWrap, player + '-iframe', type, src, thumb);
+
+      // Update player info
+      document.getElementById(player + '-chip').textContent  = chip;
+      document.getElementById(player + '-title').textContent = title;
+      document.getElementById(player + '-desc').textContent  = desc;
     });
   });
 
