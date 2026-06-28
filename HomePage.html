@@ -2075,43 +2075,82 @@ Highly recommend Gian to any creator who wants their content to stand out. Alrea
     });
   })();
 
-  // ─── TOOLS SHOWCASE ANIMATION ───
-  (function() {
-    const panel = document.getElementById('toolsPanel');
-    if (!panel) return;
+// ─── TOOLS SHOWCASE ANIMATION ───
+(function() {
+  const panel = document.getElementById('toolsPanel');
+  if (!panel) return;
 
-    const tools = [
-      { icon: '🎞', label: 'Adobe Premiere Pro', color: '#9B59B6' },
-      { icon: '🎨', label: 'After Effects', color: '#2980B9' },
-      { icon: '✂️', label: 'CapCut Pro', color: '#1ABC9C' },
-      { icon: '🎵', label: 'Sound Design', color: '#E74C3C' },
-      { icon: '🌈', label: 'Color Grading', color: '#8E44AD' },
-      { icon: '📐', label: 'Motion Graphics', color: '#2ECC71' },
-      { icon: '🔊', label: 'Audition', color: '#16A085' },
-      { icon: '🖼', label: 'Photoshop', color: '#2471A3' },
-      { icon: '🤖', label: 'AI Generation', color: '#D35400' },
-      { icon: '📽', label: '4K Export', color: '#117A65' },
-      { icon: '💡', label: 'Storyboarding', color: '#B7950B' },
-    ];
+  const tools = [
+    { icon: '🎞', label: 'Adobe Premiere Pro', color: '#9B59B6' },
+    { icon: '🎨', label: 'After Effects', color: '#2980B9' },
+    { icon: '✂️', label: 'CapCut Pro', color: '#1ABC9C' },
+    { icon: '🎵', label: 'Sound Design', color: '#E74C3C' },
+    { icon: '🌈', label: 'Color Grading', color: '#8E44AD' },
+    { icon: '📐', label: 'Motion Graphics', color: '#2ECC71' },
+    { icon: '🔊', label: 'Audition', color: '#16A085' },
+    { icon: '🖼', label: 'Photoshop', color: '#2471A3' },
+    { icon: '🤖', label: 'AI Generation', color: '#D35400' },
+    { icon: '📽', label: '4K Export', color: '#117A65' },
+    { icon: '💡', label: 'Storyboarding', color: '#B7950B' },
+  ];
 
-    // Slot positions spread around the panel (fractional: 0-1)
-    const slots = [
-      { x: 0.10, y: 0.12 },
-      { x: 0.55, y: 0.08 },
-      { x: 0.82, y: 0.18 },
-      { x: 0.06, y: 0.42 },
-      { x: 0.70, y: 0.38 },
-      { x: 0.14, y: 0.70 },
-      { x: 0.50, y: 0.78 },
-      { x: 0.80, y: 0.68 },
-      { x: 0.30, y: 0.20 },
-      { x: 0.88, y: 0.50 },
-      { x: 0.22, y: 0.52 },
-      { x: 0.62, y: 0.58 },
-    ];
+  const slots = [
+    { x: 0.10, y: 0.12 },
+    { x: 0.55, y: 0.08 },
+    { x: 0.82, y: 0.18 },
+    { x: 0.06, y: 0.42 },
+    { x: 0.70, y: 0.38 },
+    { x: 0.14, y: 0.70 },
+    { x: 0.50, y: 0.78 },
+    { x: 0.80, y: 0.68 },
+    { x: 0.30, y: 0.20 },
+    { x: 0.88, y: 0.50 },
+    { x: 0.22, y: 0.52 },
+    { x: 0.62, y: 0.58 },
+  ];
 
-    // Track which tools are currently visible and which slots are occupied
-    let slotState = new Array(slots.length).fill(null); // null = empty, else tool index
+  const isMobile = window.innerWidth < 768;
+
+  if (isMobile) {
+    // ── STATIC LAYOUT FOR MOBILE ──
+    // Show all chips in a simple flex-wrap grid inside the panel
+    panel.style.height = 'auto';
+    panel.style.minHeight = '200px';
+    panel.style.display = 'flex';
+    panel.style.flexWrap = 'wrap';
+    panel.style.alignContent = 'center';
+    panel.style.justifyContent = 'center';
+    panel.style.gap = '8px';
+    panel.style.padding = '20px 16px 36px';
+
+    // Remove the hub since chips are in a grid, not orbiting
+    const hub = panel.querySelector('.tools-panel-hub');
+    if (hub) hub.style.display = 'none';
+
+    tools.forEach(tool => {
+      const chip = document.createElement('div');
+      chip.className = 'tool-chip';
+      // Override positioning — chips are in normal flow now
+      chip.style.position = 'static';
+      chip.style.opacity = '1';
+      chip.style.transform = 'none';
+
+      const iconEl = document.createElement('div');
+      iconEl.className = 'tool-chip-icon';
+      iconEl.style.background = tool.color + '22';
+      iconEl.textContent = tool.icon;
+
+      const labelEl = document.createElement('span');
+      labelEl.textContent = tool.label;
+
+      chip.appendChild(iconEl);
+      chip.appendChild(labelEl);
+      panel.appendChild(chip);
+    });
+
+  } else {
+    // ── ANIMATED LAYOUT FOR DESKTOP ──
+    let slotState = new Array(slots.length).fill(null);
     let chipEls   = new Array(slots.length).fill(null);
 
     function pickFreeSlot() {
@@ -2147,7 +2186,6 @@ Highly recommend Gian to any creator who wants their content to stand out. Alrea
       chip.appendChild(iconEl);
       chip.appendChild(labelEl);
 
-      // Position — keep chip from clipping edges
       const chipW = 170, chipH = 50;
       const px = Math.min(Math.max(slot.x * pw, 8), pw - chipW - 8);
       const py = Math.min(Math.max(slot.y * ph, 8), ph - chipH - 40);
@@ -2155,7 +2193,6 @@ Highly recommend Gian to any creator who wants their content to stand out. Alrea
       chip.style.top  = py + 'px';
 
       panel.appendChild(chip);
-      // Force reflow then animate in
       requestAnimationFrame(() => {
         chip.classList.add('popping-in');
       });
@@ -2163,7 +2200,6 @@ Highly recommend Gian to any creator who wants their content to stand out. Alrea
       slotState[slotIdx] = toolIdx;
       chipEls[slotIdx]   = chip;
 
-      // Schedule pop-out
       const stayMs = 1800 + Math.random() * 1400;
       setTimeout(() => removeChip(slotIdx), stayMs);
     }
@@ -2180,7 +2216,6 @@ Highly recommend Gian to any creator who wants their content to stand out. Alrea
       }, { once: true });
     }
 
-    // Stagger initial appearances
     let initialCount = Math.min(6, slots.length);
     for (let i = 0; i < initialCount; i++) {
       setTimeout(() => {
@@ -2189,7 +2224,6 @@ Highly recommend Gian to any creator who wants their content to stand out. Alrea
       }, i * 260);
     }
 
-    // Continuously add new chips as slots free up
     setInterval(() => {
       const occupied = slotState.filter(v => v !== null).length;
       const maxVisible = 6;
@@ -2198,7 +2232,8 @@ Highly recommend Gian to any creator who wants their content to stand out. Alrea
         if (s >= 0) createChip(s, pickUnshownTool());
       }
     }, 520);
-  })();
+  }
+})();
 </script>
 </body>
 </html>
