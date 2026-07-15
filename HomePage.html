@@ -549,6 +549,26 @@ html[data-theme="dark"] .hero-stat-row {
 
 .ticker span.sep { color: rgba(255,255,255,0.15); }
 
+.ticker-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 90px;
+}
+
+.ticker-logo img {
+  height: 130%;
+  width: 70%;
+  max-width: 800px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.5;
+  transition: opacity 0.25s;
+}
+
+.ticker-logo img:hover { opacity: 0.9; }
+
 @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
 /* stats moved into hero sidebar */
@@ -1417,29 +1437,7 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
 
 <!-- TICKER -->
 <div class="ticker-wrap">
-  <div class="ticker">
-    <span>Documentary</span><span class="sep">✦</span>
-    <span>Podcast</span><span class="sep">✦</span>
-    <span>Voiceovers</span><span class="sep">✦</span>
-    <span>Montage</span><span class="sep">✦</span>
-    <span>Real Estate VSL</span><span class="sep">✦</span>
-    <span>Brand UGC</span><span class="sep">✦</span>
-    <span>Promotional Ad</span><span class="sep">✦</span>
-    <span>Product Ad</span><span class="sep">✦</span>
-    <span>Motion Graphics</span><span class="sep">✦</span>
-    <span>YouTube Shorts</span><span class="sep">✦</span>
-    <span>Color Grading</span><span class="sep">✦</span>
-    <span>Documentary</span><span class="sep">✦</span>
-    <span>Podcast</span><span class="sep">✦</span>
-    <span>Montage</span><span class="sep">✦</span>
-    <span>Real Estate VSL</span><span class="sep">✦</span>
-    <span>Brand UGC</span><span class="sep">✦</span>
-    <span>Promotional Ad</span><span class="sep">✦</span>
-    <span>Product Ad</span><span class="sep">✦</span>
-    <span>Motion Graphics</span><span class="sep">✦</span>
-    <span>YouTube Shorts</span><span class="sep">✦</span>
-    <span>Color Grading</span><span class="sep">✦</span>
-  </div>
+  <div class="ticker" id="logoTicker"></div>
 </div>
 
 
@@ -1527,7 +1525,7 @@ html[data-theme="dark"] footer { background: rgba(4,5,14,0.88); }
           </button>
           <button class="playlist-item" data-src="https://drive.google.com/file/d/1RW24FSHihJcEjHHXO-JiLwcS-pYq5xjY/preview" data-chip="Documentary" data-title="Documentary Feature — Vol. 2" data-desc="A second documentary piece exploring in-depth subjects with interview-driven structure and atmospheric b-roll editing." data-type="iframe" data-player="lf">
             <span class="playlist-num">3</span><span class="playlist-now-playing"><span></span><span></span><span></span><span></span></span>
-            <span class="playlist-text"><span class="playlist-label">Documentary</span><span class="playlist-name">Documentary Vol. 2</span></span>
+            <span class="playlist-text"><span class="playlist-label">Documentary</span><span class="playlist-name">Documentary Vol. 3</span></span>
           </button>
           <button class="playlist-item" data-src="https://drive.google.com/file/d/15j68zjqkuHw7amOff87imRv8Pcb9m4Cf/preview" data-chip="Documentary" data-title="Documentary Feature — Vol. 3" data-desc="A third documentary piece delving into complex narratives with archival footage and contemporary interviews." data-type="iframe" data-player="lf">
             <span class="playlist-num">4</span><span class="playlist-now-playing"><span></span><span></span><span></span><span></span></span>
@@ -1976,6 +1974,46 @@ Highly recommend Gian to any creator who wants their content to stand out. Alrea
       document.getElementById(player + '-desc').textContent  = desc;
     });
   });
+
+  // ─── LOGO TICKER ───
+  (function() {
+    const track = document.getElementById('logoTicker');
+    if (!track) return;
+
+    const logoIds = [
+      '1MHzQd2IDfdRLaXUbStjfSHY6AMogQNuj',
+      '1peyNstqqCSkHior5j3FB62rMVswjB-9m',
+      '1IWJI1NAe622ZOkdqkSmg6oLy8xeRFt7U',
+      '1KbwhbjIZr870UPJiOoFSENWpknyZkUdQ',
+      '1hCcLwHyEMVz5ELwlWAHMShpKCuG2IiqX',
+      '1jcJ7kahINvYHyPfawHBbx9QX4VSWInG7',
+      '1X_4qsslon-VV8Kgl9C3yYC3tQV-8_wJB',
+      '1txnoRrHwDMTsq872t-4PPEV0FjP3kho0',
+      '1cLdiFgl45xQAHzcNsFCsm5nv_JZyAOSg',
+      '1lmmPg4K4K2E3_Cv51GNpALlYBT5mAaBu',
+      '181PxQTsZX2zhmgPWoPzqKhH9qXSnlMkv',
+      '1nxPtMa-UoCBPAdYaiB3hjtmWDl6icwNx'
+    ];
+
+    function buildLogoSet() {
+      const frag = document.createDocumentFragment();
+      logoIds.forEach(id => {
+        const item = document.createElement('span');
+        item.className = 'ticker-logo';
+        const img = document.createElement('img');
+        img.src = `https://drive.google.com/thumbnail?id=${id}&sz=w300`;
+        img.alt = 'Client logo';
+        img.loading = 'lazy';
+        item.appendChild(img);
+        frag.appendChild(item);
+      });
+      return frag;
+    }
+
+    // Duplicate the set so the marquee loop is seamless (translateX(-50%))
+    track.appendChild(buildLogoSet());
+    track.appendChild(buildLogoSet());
+  })();
 
   // Fade-in on scroll
   const observer = new IntersectionObserver((entries) => {
